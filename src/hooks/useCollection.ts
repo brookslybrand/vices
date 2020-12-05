@@ -51,6 +51,7 @@ export default function useCollection<T>(
         if (snapshot.empty) {
           setState('doesNotExist')
           setDocs([])
+          return
         }
         const docs = snapshot.docs.map((doc) => {
           // I'm not actually sure if type casting is right, I'm kind of copying https://github.com/CSFrequency/react-firebase-hooks/blob/master/firestore/useCollection.ts#L64
