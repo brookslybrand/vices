@@ -12,6 +12,7 @@
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx ."
   },
   "dependencies": {
+    "@emotion/react": "^11.1.1",
     "autoprefixer": "^10.0.4",
     "next": "10.0.3",
     "postcss": "^8.1.10",
@@ -20,6 +21,8 @@
     "tailwindcss": "^2.0.1"
   },
   "devDependencies": {
+    "@emotion/babel-plugin": "^11.0.0",
+    "@svgr/webpack": "^5.5.0",
     "@types/node": "^14.14.10",
     "@types/react": "^17.0.0",
     "prettier": "^2.2.1",
