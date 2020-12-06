@@ -1,8 +1,29 @@
-import useCollection from 'hooks/useCollection'
+import Link from 'next/link'
+import { auth } from 'firebaseApp'
+import { useAuth } from 'hooks/useAuth'
 
 export default function Home() {
-  const { state, docs } = useCollection('test')
+  return (
+    <main className="m-4">
+      <LogoutButton />
+      <h1>A whole lot of nothing</h1>
+    </main>
+  )
+}
 
-  console.log({ state, docs })
-  return <h1>A whole lot of nothing</h1>
+function LogoutButton() {
+  const { state } = useAuth()
+  if (state === 'loggedIn') {
+    return (
+      <button className="hover:text-green-800" onClick={() => auth.signOut()}>
+        Logout
+      </button>
+    )
+  } else {
+    return (
+      <Link href="login">
+        <a className="hover:text-green-800">Login</a>
+      </Link>
+    )
+  }
 }

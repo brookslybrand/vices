@@ -1,12 +1,13 @@
-import type { AppProps } from "next/app";
+import { AuthProvider } from 'hooks/useAuth'
+import type { AppProps } from 'next/app'
 
-import "../styles/index.css";
+import '../styles/index.css'
 
 type ComponentWithPageLayout = {
-  Component: AppProps["Component"] & {
-    PageLayout?: React.ComponentType;
-  };
-};
+  Component: AppProps['Component'] & {
+    PageLayout?: React.ComponentType
+  }
+}
 
 export default function App({
   Component,
@@ -15,11 +16,13 @@ export default function App({
   // get a page root if one was set
   const PageLayout =
     Component.PageLayout ||
-    (({ children }: { children: React.ReactNode }) => <>{children}</>);
+    (({ children }: { children: React.ReactNode }) => <>{children}</>)
 
   return (
     <PageLayout>
-      <Component {...pageProps} />
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
     </PageLayout>
-  );
+  )
 }
