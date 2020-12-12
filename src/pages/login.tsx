@@ -28,7 +28,7 @@ function Login() {
       </Head>
       <main className="w-40 h-screen mx-auto mt-8">
         <button
-          className="w-full px-4 py-2 text-2xl text-white bg-green-800 rounded-md"
+          className="w-full px-4 py-2 text-2xl bg-green-800 rounded-md text-gray-50"
           onClick={handleLogin}
         >
           Login

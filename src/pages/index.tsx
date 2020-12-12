@@ -21,7 +21,7 @@ function LogoutButton() {
     )
   } else {
     return (
-      <Link href="login">
+      <Link href="/login">
         <a className="hover:text-green-800">Login</a>
       </Link>
     )
