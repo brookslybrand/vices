@@ -1,9 +1,16 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+		// only allow authenticated users to update anything
+  	match /{document=**} {
+    	allow read, write:
+      	if request.auth.uid != null;
+    }
+
+  	// anyone can read anything
     match /{document=**} {
-      allow read, write: if
-          request.time < timestamp.date(2021, 1, 4);
+      allow read:
+      	if true;
     }
   }
 }

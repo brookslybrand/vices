@@ -3,6 +3,8 @@ import { Machine, assign, EventObject } from 'xstate'
 import { useMachine } from '@xstate/react'
 import { format } from 'date-fns'
 import clsx from 'clsx'
+import { db } from 'firebaseApp'
+import { useEffect } from 'react'
 
 interface Context {
   date: null | Date
@@ -12,20 +14,22 @@ interface Context {
   imageUrl: null | string
 }
 
+const initialContext: Context = {
+  date: null,
+  name: null,
+  amount: null,
+  description: null,
+  imageUrl: null,
+}
+
 const purchaseMachine = Machine(
   {
     id: 'purchase',
-    context: {
-      date: null,
-      name: null,
-      amount: null,
-      description: null,
-      imageUrl: null,
-    } as Context,
+    context: initialContext,
     initial: 'inputting',
     states: {
       inputting: {
-        initial: 'incomplete',
+        initial: 'check',
         on: {
           UPDATE_CONTEXT: {
             target: '.check',
@@ -41,21 +45,47 @@ const purchaseMachine = Machine(
               { target: 'incomplete' },
             ],
           },
-          complete: {},
+          complete: {
+            on: {
+              SUBMIT: '#purchase.uploading',
+            },
+          },
         },
       },
-      uploading: {},
-      failed: {},
+      uploading: {
+        invoke: {
+          id: 'upload',
+          src: 'upload',
+          onDone: { target: 'uploaded' },
+          onError: { target: 'failed' },
+        },
+      },
+      uploaded: {
+        entry: ['clearContext'],
+        on: {
+          UPDATE_CONTEXT: {
+            target: 'inputting',
+            actions: 'updateContext',
+          },
+        },
+      },
+      // TODO: make the failures a little more helpful
+      failed: {
+        entry: (context, event) => {
+          console.error(event.data)
+          window.alert('Something went wrong! Please try again')
+        },
+        always: 'inputting',
+      },
     },
   },
   {
     actions: {
-      updateContext: assign(
-        (context, event: EventObject & { data: Partial<Context> }) => ({
-          ...context,
-          ...event.data,
-        })
-      ),
+      updateContext: assign<Context, any>((context, event) => ({
+        ...context,
+        ...(event as EventObject & { data: Partial<Context> }).data, // this is due to a TS bug https://github.com/davidkpiano/xstate/issues/1198
+      })),
+      clearContext: assign(() => initialContext),
     },
     guards: {
       isComplete: ({ date, name, amount }) => {
@@ -64,6 +94,9 @@ const purchaseMachine = Machine(
         if (amount === null || amount <= 0) return false
         return true
       },
+    },
+    services: {
+      upload: (context) => db.collection('tobacco-purchases').add(context),
     },
   }
 )
@@ -77,6 +110,17 @@ function Tobacco() {
   const { date, name, amount, description, imageUrl } = state.context
   const submitDisabled = !state.matches('inputting.complete')
 
+  console.log(state.value)
+
+  // TODO: delete
+  useEffect(() => {
+    handleUpdate({
+      date: new Date(),
+      name: 'Brooks',
+      amount: 1.76,
+    })
+  }, [])
+
   return (
     <main className="flex flex-col items-center">
       <Head>
@@ -86,6 +130,7 @@ function Tobacco() {
         className="mt-8 space-y-4 w-80"
         onSubmit={(e) => {
           e.preventDefault()
+          send('SUBMIT')
         }}
       >
         <h1 className="text-4xl ">Add purchase</h1>
@@ -129,7 +174,7 @@ function Tobacco() {
             onChange={(e) => handleUpdate({ amount: Number(e.target.value) })}
             required
             min="0"
-            step="0.1"
+            step="0.01"
           />
         </div>
 
@@ -168,7 +213,11 @@ function Tobacco() {
           type="submit"
           disabled={submitDisabled}
         >
-          Submit
+          {state.matches('uploading')
+            ? 'Submitting...'
+            : state.matches('uploaded')
+            ? 'Submitted'
+            : 'Submit'}
         </button>
       </form>
     </main>
