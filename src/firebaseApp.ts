@@ -24,3 +24,10 @@ const db = firebase.firestore()
 export { firebase, db, auth }
 
 // types
+export interface TobaccoPurchase {
+  date: firebase.firestore.Timestamp
+  name: string
+  amount: number
+  description: null | string
+  imageUrl: null | string
+}

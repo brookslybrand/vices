@@ -1,18 +1,12 @@
 import Head from 'next/head'
 import { Machine, assign, EventObject } from 'xstate'
 import { useMachine } from '@xstate/react'
-import { format } from 'date-fns'
 import clsx from 'clsx'
-import { db } from 'firebaseApp'
-import { useEffect } from 'react'
+import { db, TobaccoPurchase } from 'firebaseApp'
+import { TOBACCO_PURCHASES } from 'constants/collections'
 
-interface Context {
-  date: null | Date
-  name: null | string
-  amount: null | number
-  description: null | string
-  imageUrl: null | string
-}
+type Nullable<T> = { [P in keyof T]: T[P] | null }
+type Context = Nullable<TobaccoPurchase & { date: string }>
 
 const initialContext: Context = {
   date: null,
@@ -89,14 +83,20 @@ const purchaseMachine = Machine(
     },
     guards: {
       isComplete: ({ date, name, amount }) => {
-        if (date === null) return false
+        if (date === null || isNaN(new Date(date).valueOf())) return false
         if (name === null || name === '') return false
         if (amount === null || amount <= 0) return false
         return true
       },
     },
     services: {
-      upload: (context) => db.collection('tobacco-purchases').add(context),
+      upload: ({ date, ...rest }) => {
+        if (date === null) {
+          throw new Error(`date is null`)
+        }
+        const data = { ...rest, date: new Date(date) }
+        return db.collection(TOBACCO_PURCHASES).add(data)
+      },
     },
   }
 )
@@ -109,17 +109,6 @@ function Tobacco() {
 
   const { date, name, amount, description, imageUrl } = state.context
   const submitDisabled = !state.matches('inputting.complete')
-
-  console.log(state.value)
-
-  // TODO: delete
-  useEffect(() => {
-    handleUpdate({
-      date: new Date(),
-      name: 'Brooks',
-      amount: 1.76,
-    })
-  }, [])
 
   return (
     <main className="flex flex-col items-center">
@@ -142,8 +131,8 @@ function Tobacco() {
             id="date"
             className="w-full"
             type="date"
-            value={date ? format(date, 'yyyy-MM-dd') : ''}
-            onChange={(e) => handleUpdate({ date: new Date(e.target.value) })}
+            value={date ?? ''}
+            onChange={(e) => handleUpdate({ date: e.target.value })}
             required
           />
         </div>
@@ -171,7 +160,10 @@ function Tobacco() {
             id="amount"
             type="number"
             value={amount ?? ''}
-            onChange={(e) => handleUpdate({ amount: Number(e.target.value) })}
+            onChange={(e) => {
+              const val = e.target.value
+              handleUpdate({ amount: val === '' ? null : Number(val) })
+            }}
             required
             min="0"
             step="0.01"
