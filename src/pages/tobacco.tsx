@@ -6,7 +6,7 @@ import { db, TobaccoPurchase } from 'firebaseApp'
 import { TOBACCO_PURCHASES } from 'constants/collections'
 
 type Nullable<T> = { [P in keyof T]: T[P] | null }
-type Context = Nullable<TobaccoPurchase & { date: string }>
+type Context = Nullable<Omit<TobaccoPurchase, 'date'> & { date: string }>
 
 const initialContext: Context = {
   date: null,
