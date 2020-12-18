@@ -30,10 +30,10 @@ export default function App({
     (({ children }: { children: React.ReactNode }) => <>{children}</>)
 
   return (
-    <PageLayout>
-      <AuthProvider>
+    <AuthProvider>
+      <PageLayout>
         <Component {...pageProps} />
-      </AuthProvider>
-    </PageLayout>
+      </PageLayout>
+    </AuthProvider>
   )
 }

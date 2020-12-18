@@ -1,63 +1,33 @@
-import Link from 'next/link'
-import { auth, TobaccoPurchase } from 'firebaseApp'
-import { useAuth } from 'hooks/useAuth'
+import { TobaccoPurchase } from 'firebaseApp'
 import { TOBACCO_PURCHASES } from 'constants/collections'
 import useCollection from 'hooks/useCollection'
 import { format, addDays } from 'date-fns'
+import PageLayout from 'components/page-layout'
 
-export default function Home() {
-  return (
-    <main className="m-4">
-      <div className="flex space-x-2">
-        <LogoutButton />
-        <nav>
-          <Link href="/tobacco">
-            <a className="hover:text-green-800">Add tobacco purchase</a>
-          </Link>
-        </nav>
-      </div>
-      <NextPurchaseDate />
-    </main>
-  )
-}
-
-function LogoutButton() {
-  const { state } = useAuth()
-  if (state === 'loggedIn') {
-    return (
-      <button className="hover:text-green-800" onClick={() => auth.signOut()}>
-        Logout
-      </button>
-    )
-  } else {
-    return (
-      <Link href="/login">
-        <a className="hover:text-green-800">Login</a>
-      </Link>
-    )
-  }
-}
-
-function NextPurchaseDate() {
+function Home() {
   const { docs: tobaccoPurchases, state } = useCollection<TobaccoPurchase>(
     TOBACCO_PURCHASES
   )
 
   return (
-    <article className="flex flex-col items-center mt-8">
-      <h1 className="text-4xl">
-        Next Purchase Date:{' '}
-        <span>
-          {state === 'loading'
-            ? 'Loading...'
-            : state === 'loaded'
-            ? format(getNextPurchaseDate(tobaccoPurchases), 'MM/dd/yy')
-            : 'Something went wrong'}
-        </span>
-      </h1>
-    </article>
+    <h1 className="text-4xl">
+      Next Purchase Date:{' '}
+      <span>
+        {state === 'loading'
+          ? 'Loading...'
+          : state === 'loaded'
+          ? format(getNextPurchaseDate(tobaccoPurchases), 'MM/dd/yy')
+          : 'Something went wrong'}
+      </span>
+    </h1>
   )
 }
+
+Home.PageLayout = ({ children }: { children: React.ReactNode }) => {
+  return <PageLayout title="Vices" children={children} />
+}
+
+export default Home
 
 const daysInMonth = 30
 function getNextPurchaseDate(purchases: TobaccoPurchase[]) {

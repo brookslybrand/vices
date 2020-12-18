@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { firebase, auth } from 'firebaseApp'
 import { useAuth } from 'hooks/useAuth'
 import { useEffect } from 'react'
+import PageLayout from 'components/page-layout'
 
 function Login() {
   const state = useLoggedInRedirect()
@@ -36,6 +37,10 @@ function Login() {
       </main>
     </>
   )
+}
+
+Login.PageLayout = ({ children }: { children: React.ReactNode }) => {
+  return <PageLayout title="Login" children={children} />
 }
 
 export default Login

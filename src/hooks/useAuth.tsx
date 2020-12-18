@@ -3,7 +3,7 @@ import { auth } from 'firebaseApp'
 
 export { AuthProvider, useAuth }
 
-type User =
+export type User =
   | { state: 'checking' | 'loggedOut' }
   | {
       state: 'loggedIn'
@@ -15,9 +15,12 @@ const AuthContext = createContext<undefined | User>(undefined)
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User>({ state: 'checking' })
 
-  useEffect(() =>
-    auth.onAuthStateChanged(
+  useEffect(() => {
+    let cancel = false
+    const unsubscribe = auth.onAuthStateChanged(
       (firebaseUser) => {
+        if (cancel) return
+
         if (firebaseUser === null) {
           setUser({ state: 'loggedOut' })
         } else {
@@ -33,7 +36,12 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser({ state: 'loggedOut' })
       }
     )
-  )
+
+    return () => {
+      cancel = true
+      unsubscribe()
+    }
+  }, [])
 
   return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>
 }
