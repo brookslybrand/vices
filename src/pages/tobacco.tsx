@@ -4,102 +4,7 @@ import clsx from 'clsx'
 import { db, TobaccoPurchase } from 'firebaseApp'
 import { TOBACCO_PURCHASES } from 'constants/collections'
 import PageLayout from 'components/page-layout'
-
-type Nullable<T> = { [P in keyof T]: T[P] | null }
-type Context = Nullable<Omit<TobaccoPurchase, 'date'> & { date: string }>
-
-const initialContext: Context = {
-  date: null,
-  name: null,
-  amount: null,
-  description: null,
-  imageUrl: null,
-}
-
-const purchaseMachine = Machine(
-  {
-    id: 'purchase',
-    context: initialContext,
-    initial: 'inputting',
-    states: {
-      inputting: {
-        initial: 'check',
-        on: {
-          UPDATE_CONTEXT: {
-            target: '.check',
-            actions: 'updateContext',
-          },
-        },
-        states: {
-          incomplete: {},
-          // middle state is to check whether or not the new context means the data is properly filled out
-          check: {
-            always: [
-              { target: 'complete', cond: 'isComplete' },
-              { target: 'incomplete' },
-            ],
-          },
-          complete: {
-            on: {
-              SUBMIT: '#purchase.uploading',
-            },
-          },
-        },
-      },
-      uploading: {
-        invoke: {
-          id: 'upload',
-          src: 'upload',
-          onDone: { target: 'uploaded' },
-          onError: { target: 'failed' },
-        },
-      },
-      uploaded: {
-        entry: ['clearContext'],
-        on: {
-          UPDATE_CONTEXT: {
-            target: 'inputting',
-            actions: 'updateContext',
-          },
-        },
-      },
-      // TODO: make the failures a little more helpful
-      failed: {
-        entry: (context, event) => {
-          console.error(event.data)
-          window.alert('Something went wrong! Please try again')
-        },
-        always: 'inputting',
-      },
-    },
-  },
-  {
-    actions: {
-      updateContext: assign<Context, any>((context, event) => ({
-        ...context,
-        ...(event as EventObject & { data: Partial<Context> }).data, // this is due to a TS bug https://github.com/davidkpiano/xstate/issues/1198
-      })),
-      clearContext: assign(() => initialContext),
-    },
-    guards: {
-      isComplete: ({ date, name, amount }) => {
-        if (date === null || isNaN(new Date(date).valueOf())) return false
-        if (name === null || name === '') return false
-        if (amount === null || amount <= 0) return false
-        return true
-      },
-    },
-    services: {
-      upload: ({ date, ...rest }) => {
-        if (date === null) {
-          throw new Error(`date is null`)
-        }
-        const data = { ...rest, date: new Date(date) }
-        return db.collection(TOBACCO_PURCHASES).add(data)
-      },
-    },
-  }
-)
+import useAuthRedirect from 'hooks/useAuthRedirect'
 
 function Tobacco() {
   const [state, send] = useMachine(purchaseMachine)
@@ -211,12 +116,111 @@ function Tobacco() {
   )
 }
 
-Tobacco.PageLayout = ({ children }: { children: React.ReactNode }) => {
+const TobaccoPageLayout = ({ children }: { children: React.ReactNode }) => {
+  useAuthRedirect()
   return <PageLayout title="Add Purchase" children={children} />
 }
+
+Tobacco.PageLayout = TobaccoPageLayout
 
 export default Tobacco
 
 function Label({ htmlFor, ...props }: React.ComponentPropsWithoutRef<'label'>) {
   return <label htmlFor={htmlFor} className="text-4xl" {...props} />
 }
+
+type Nullable<T> = { [P in keyof T]: T[P] | null }
+type Context = Nullable<Omit<TobaccoPurchase, 'date'> & { date: string }>
+
+const initialContext: Context = {
+  date: null,
+  name: null,
+  amount: null,
+  description: null,
+  imageUrl: null,
+}
+
+const purchaseMachine = Machine(
+  {
+    id: 'purchase',
+    context: initialContext,
+    initial: 'inputting',
+    states: {
+      inputting: {
+        initial: 'check',
+        on: {
+          UPDATE_CONTEXT: {
+            target: '.check',
+            actions: 'updateContext',
+          },
+        },
+        states: {
+          incomplete: {},
+          // middle state is to check whether or not the new context means the data is properly filled out
+          check: {
+            always: [
+              { target: 'complete', cond: 'isComplete' },
+              { target: 'incomplete' },
+            ],
+          },
+          complete: {
+            on: {
+              SUBMIT: '#purchase.uploading',
+            },
+          },
+        },
+      },
+      uploading: {
+        invoke: {
+          id: 'upload',
+          src: 'upload',
+          onDone: { target: 'uploaded' },
+          onError: { target: 'failed' },
+        },
+      },
+      uploaded: {
+        entry: ['clearContext'],
+        on: {
+          UPDATE_CONTEXT: {
+            target: 'inputting',
+            actions: 'updateContext',
+          },
+        },
+      },
+      // TODO: make the failures a little more helpful
+      failed: {
+        entry: (context, event) => {
+          console.error(event.data)
+          window.alert('Something went wrong! Please try again')
+        },
+        always: 'inputting',
+      },
+    },
+  },
+  {
+    actions: {
+      updateContext: assign<Context, any>((context, event) => ({
+        ...context,
+        ...(event as EventObject & { data: Partial<Context> }).data, // this is due to a TS bug https://github.com/davidkpiano/xstate/issues/1198
+      })),
+      clearContext: assign(() => initialContext),
+    },
+    guards: {
+      isComplete: ({ date, name, amount }) => {
+        if (date === null || isNaN(new Date(date).valueOf())) return false
+        if (name === null || name === '') return false
+        if (amount === null || amount <= 0) return false
+        return true
+      },
+    },
+    services: {
+      upload: ({ date, ...rest }) => {
+        if (date === null) {
+          throw new Error(`date is null`)
+        }
+        const data = { ...rest, date: new Date(date) }
+        return db.collection(TOBACCO_PURCHASES).add(data)
+      },
+    },
+  }
+)

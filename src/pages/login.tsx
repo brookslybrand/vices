@@ -1,27 +1,18 @@
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import { firebase, auth } from 'firebaseApp'
-import { useAuth } from 'hooks/useAuth'
-import { useEffect } from 'react'
 import PageLayout from 'components/page-layout'
+import useAuthRedirect from 'hooks/useAuthRedirect'
 
+const handleLogin = () => {
+  const provider = new firebase.auth.GoogleAuthProvider()
+  auth
+    .signInWithPopup(provider)
+    .then((result) => {})
+    .catch((error) => {
+      console.warn(error)
+    })
+}
 function Login() {
-  const state = useLoggedInRedirect()
-  // don't display the login screen if redirecting
-  if (state === 'redirecting') {
-    return null
-  }
-
-  const handleLogin = () => {
-    const provider = new firebase.auth.GoogleAuthProvider()
-    auth
-      .signInWithPopup(provider)
-      .then((result) => {})
-      .catch((error) => {
-        console.warn(error)
-      })
-  }
-
   return (
     <>
       <Head>
@@ -39,21 +30,12 @@ function Login() {
   )
 }
 
-Login.PageLayout = ({ children }: { children: React.ReactNode }) => {
+function LoginPageLayout({ children }: { children: React.ReactNode }) {
+  // redirect home once logged in
+  useAuthRedirect('/', 'loggedIn')
   return <PageLayout title="Login" children={children} />
 }
 
+Login.PageLayout = LoginPageLayout
+
 export default Login
-
-function useLoggedInRedirect() {
-  const { state } = useAuth()
-  const router = useRouter()
-  // if logged in, redirect
-  useEffect(() => {
-    if (state === 'loggedIn') {
-      router.replace('/')
-    }
-  }, [router, state])
-
-  return state === 'loggedIn' ? 'redirecting' : 'staying'
-}
