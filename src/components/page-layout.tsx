@@ -12,10 +12,12 @@ function PageLayout({
 }) {
   return (
     <>
-      <Head>
-        <title>{title}</title>
-      </Head>
-      <Navigation />
+      <header>
+        <Head>
+          <title>{title}</title>
+        </Head>
+        <Navigation />
+      </header>
       <main className="flex flex-col items-center mt-8">{children}</main>
     </>
   )

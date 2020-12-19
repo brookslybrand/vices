@@ -1,10 +1,12 @@
+import Image from 'next/image'
+import PageLayout from 'components/page-layout'
 import { Machine, assign, EventObject } from 'xstate'
 import { useMachine } from '@xstate/react'
 import clsx from 'clsx'
 import { db, TobaccoPurchase } from 'firebaseApp'
 import { TOBACCO_PURCHASES } from 'constants/collections'
-import PageLayout from 'components/page-layout'
 import useAuthRedirect from 'hooks/useAuthRedirect'
+import { useState } from 'react'
 
 function Tobacco() {
   const [state, send] = useMachine(purchaseMachine)
@@ -83,18 +85,10 @@ function Tobacco() {
         />
       </div>
 
-      <div>
-        <Label className="text-lg" htmlFor="image">
-          Add image
-        </Label>
-        <input
-          type="file"
-          id="image"
-          accept="image/*"
-          value={imageUrl ?? ''}
-          onChange={(e) => handleUpdate({})} // TODO: implement uploading images
-        />
-      </div>
+      <AddImage
+        imageUrl={imageUrl}
+        onChange={(url) => handleUpdate({ imageUrl: url })}
+      />
 
       <button
         className={clsx(
@@ -124,6 +118,73 @@ const TobaccoPageLayout = ({ children }: { children: React.ReactNode }) => {
 Tobacco.PageLayout = TobaccoPageLayout
 
 export default Tobacco
+
+function AddImage({
+  imageUrl,
+  onChange,
+}: {
+  imageUrl: null | string
+  onChange: (imageUrl: string) => void
+}) {
+  const [imageData, setImageData] = useState<null | {
+    width: number
+    height: number
+  }>(null)
+  return (
+    <div>
+      {imageUrl !== null && imageData !== null ? (
+        <Image
+          src={imageUrl}
+          width={imageData.width}
+          height={imageData.height}
+          alt="Image uploaded by user"
+        />
+      ) : (
+        <p>
+          <Label className="text-lg" htmlFor="image">
+            Add image
+          </Label>
+          <input
+            type="file"
+            id="image"
+            accept="image/*"
+            onChange={(e) => {
+              const { files } = e.target
+              if (files && files[0]) {
+                const reader = new FileReader()
+                reader.readAsDataURL(files[0])
+                reader.onload = function (e) {
+                  //Initiate the JavaScript Image object.
+                  const image = document.createElement('img')
+                  const src = e.target?.result
+                  if (typeof src !== 'string') {
+                    throw new Error(
+                      'Something went wrong with the image upload'
+                    )
+                  }
+                  image.src = src
+
+                  //Validate the File Height and Width.
+                  image.onload = () => {
+                    const { width, height } = image
+                    onChange(src)
+                    setImageData({ width, height })
+                  }
+                  image.onerror = (e) => {
+                    console.warn(e)
+                    throw new Error(
+                      'Something went wrong with the image upload'
+                    )
+                  }
+                }
+              }
+            }}
+          />
+        </p>
+      )}
+    </div>
+  )
+}
 
 function Label({ htmlFor, ...props }: React.ComponentPropsWithoutRef<'label'>) {
   return <label htmlFor={htmlFor} className="text-4xl" {...props} />
