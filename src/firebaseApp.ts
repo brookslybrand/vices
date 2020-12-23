@@ -1,6 +1,7 @@
 import firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
+import 'firebase/storage'
 import 'firebase/functions'
 import 'firebase/performance'
 
@@ -20,8 +21,10 @@ if (firebase.apps.length === 0) {
 
 const auth = firebase.auth()
 const db = firebase.firestore()
+const storage = firebase.storage()
+const storageRef = storage.ref() // not sure if this should be done in the file where it's used
 
-export { firebase, db, auth }
+export { firebase, db, auth, storageRef }
 
 // types
 export interface TobaccoPurchase {

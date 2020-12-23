@@ -15,7 +15,7 @@ function Navigation() {
         </Link>
         {state === 'loggedIn' ? (
           <>
-            <Link href="/tobacco">
+            <Link href="/tobacco/add-purchase">
               <a className="hover:text-green-800">Add tobacco purchase</a>
             </Link>
           </>

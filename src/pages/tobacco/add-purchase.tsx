@@ -3,12 +3,12 @@ import PageLayout from 'components/page-layout'
 import { Machine, assign, EventObject } from 'xstate'
 import { useMachine } from '@xstate/react'
 import clsx from 'clsx'
-import { db, TobaccoPurchase } from 'firebaseApp'
+import { db, storageRef, TobaccoPurchase } from 'firebaseApp'
 import { TOBACCO_PURCHASES } from 'constants/collections'
 import useAuthRedirect from 'hooks/useAuthRedirect'
 import { useState } from 'react'
 
-function Tobacco() {
+function AddPurchase() {
   const [state, send] = useMachine(purchaseMachine)
 
   const handleUpdate = (newContext: Partial<Context>) =>
@@ -19,7 +19,7 @@ function Tobacco() {
 
   return (
     <form
-      className="mt-8 space-y-4 w-80"
+      className="my-8 space-y-4 w-80"
       onSubmit={(e) => {
         e.preventDefault()
         send('SUBMIT')
@@ -110,14 +110,14 @@ function Tobacco() {
   )
 }
 
-const TobaccoPageLayout = ({ children }: { children: React.ReactNode }) => {
+const AddPurchasePageLayout = ({ children }: { children: React.ReactNode }) => {
   useAuthRedirect()
   return <PageLayout title="Add Purchase" children={children} />
 }
 
-Tobacco.PageLayout = TobaccoPageLayout
+AddPurchase.PageLayout = AddPurchasePageLayout
 
-export default Tobacco
+export default AddPurchase
 
 function AddImage({
   imageUrl,
@@ -251,7 +251,7 @@ const purchaseMachine = Machine(
       // TODO: make the failures a little more helpful
       failed: {
         entry: (context, event) => {
-          console.error(event.data)
+          console.warn(event.data)
           window.alert('Something went wrong! Please try again')
         },
         always: 'inputting',
@@ -275,12 +275,33 @@ const purchaseMachine = Machine(
       },
     },
     services: {
-      upload: ({ date, ...rest }) => {
+      upload: async ({ date, ...rest }) => {
         if (date === null) {
           throw new Error(`date is null`)
         }
-        const data = { ...rest, date: new Date(date) }
-        return db.collection(TOBACCO_PURCHASES).add(data)
+        const collectionRef = db.collection(TOBACCO_PURCHASES)
+        let data = { ...rest, date: new Date(date) }
+        const { imageUrl } = data
+        // if there is an image, upload the data to firestore, then the image to storage,
+        // then update the doc with the storage path
+        if (imageUrl !== null) {
+          data.imageUrl = null
+          // upload the data
+          const { id } = await collectionRef.add(data)
+
+          // upload the image
+          const imageRef = storageRef.child(`tobacco-purchases/${id}.jpeg`)
+          const result = await imageRef.putString(imageUrl, 'data_url')
+          const downloadUrl = await result.ref.getDownloadURL()
+
+          // update the imageUrl
+          await collectionRef.doc(id).update({ imageUrl: downloadUrl })
+        } else {
+          // upload the data
+          await collectionRef.add(data)
+        }
+        // if there were no issues, we can resolve
+        return Promise.resolve()
       },
     },
   }
