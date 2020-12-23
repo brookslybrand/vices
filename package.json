@@ -12,18 +12,18 @@
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx ."
   },
   "dependencies": {
-    "@emotion/react": "^11.1.2",
-    "@xstate/react": "^1.1.0",
+    "@emotion/react": "^11.1.4",
+    "@xstate/react": "^1.2.1",
     "autoprefixer": "^10.1.0",
     "clsx": "^1.1.1",
     "date-fns": "^2.16.1",
     "firebase": "^8.2.1",
-    "next": "10.0.3",
+    "next": "^10.0.4",
     "postcss": "^8.2.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "tailwindcss": "^2.0.2",
-    "xstate": "^4.15.1"
+    "xstate": "^4.15.2"
   },
   "devDependencies": {
     "@axe-core/react": "^4.1.0",
@@ -31,8 +31,8 @@
     "@svgr/webpack": "^5.5.0",
     "@types/node": "^14.14.14",
     "@types/react": "^17.0.0",
-    "@typescript-eslint/eslint-plugin": "^4.10.0",
-    "@typescript-eslint/parser": "^4.10.0",
+    "@typescript-eslint/eslint-plugin": "^4.11.0",
+    "@typescript-eslint/parser": "^4.11.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.16.0",
     "eslint-config-prettier": "^7.1.0",
