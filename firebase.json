@@ -2,5 +2,8 @@
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "  "
+  },
+  "storage": {
+    "rules": "storage.rules"
   }
 }

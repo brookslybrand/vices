@@ -112,7 +112,7 @@ function AddPurchase() {
 
 const AddPurchasePageLayout = ({ children }: { children: React.ReactNode }) => {
   useAuthRedirect()
-  return <PageLayout title="Add Purchase" children={children} />
+  return <PageLayout title="Add Tobacco Purchase" children={children} />
 }
 
 AddPurchase.PageLayout = AddPurchasePageLayout

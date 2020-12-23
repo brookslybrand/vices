@@ -13,6 +13,9 @@ function Navigation() {
         <Link href="/">
           <a className="hover:text-green-800">Home</a>
         </Link>
+        <Link href="/tobacco/view-purchases">
+          <a className="hover:text-green-800">View tobacco purchase</a>
+        </Link>
         {state === 'loggedIn' ? (
           <>
             <Link href="/tobacco/add-purchase">
