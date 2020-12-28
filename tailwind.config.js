@@ -9,7 +9,7 @@ module.exports = {
       body: ['"Work Sans"', 'sans-serif'],
     },
     colors: {
-      gray: colors.warmGray,
+      gray: colors.blueGray,
       orange: colors.orange,
       pink: colors.rose,
       purple: colors.fuchsia,

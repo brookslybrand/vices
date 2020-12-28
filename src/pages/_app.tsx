@@ -2,6 +2,7 @@ import React from 'react'
 import { AuthProvider } from 'hooks/useAuth'
 import type { AppProps } from 'next/app'
 
+import '@reach/menu-button/styles.css'
 import '../styles/index.css'
 
 type ComponentWithPageLayout = {
