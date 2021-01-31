@@ -1,17 +1,10 @@
 import tw, { css } from 'twin.macro'
 import Link from 'next/link'
+import type { LinkProps } from 'next/link'
 import { auth } from 'firebaseApp'
 import { useAuth, User } from 'hooks/useAuth'
 import { useRouter } from 'next/router'
-import {
-  Menu,
-  MenuList,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  MenuPopover,
-  MenuLink,
-} from '@reach/menu-button'
+import { Menu, MenuList, MenuButton, MenuLink } from '@reach/menu-button'
 import VisuallyHidden from '@reach/visually-hidden'
 
 function Navigation() {
@@ -72,41 +65,45 @@ function NavMenu() {
         <VisuallyHidden>Menu</VisuallyHidden>
         <MenuIcon />
       </MenuButton>
-      <MenuList
-      //tw="bg-gray-100"
-      >
-        <Link href="/" passHref>
-          <MenuLink
-            id="ass"
-            as="a"
-            tw="hover:bg-gray-500 hover:text-white focus:bg-gray-500 focus:text-white focus-within:bg-gray-500"
-            css={css`
-              &[data-selected] {
-                ${tw`bg-blue-400`}
-                /* background: green; */
-                color: white;
-                outline: none;
-              }
-            `}
-          >
-            Home
-          </MenuLink>
-        </Link>
-        <Link href="/tobacco/view-purchases" passHref>
-          <MenuLink as="a">View tobacco purchase</MenuLink>
-        </Link>
+      <MenuList tw="bg-gray-100 whitespace-nowrap outline-none py-3 px-0 mt-2 ml-1 border border-gray-500 rounded-sm">
+        <CustomMenuLink href="/">Home</CustomMenuLink>
+        <CustomMenuLink href="/tobacco/view-purchases">
+          View tobacco purchase
+        </CustomMenuLink>
 
         {state === 'loggedIn' ? (
-          <>
-            <Link href="/tobacco/add-purchase" passHref>
-              <MenuLink as="a">Add tobacco purchase</MenuLink>
-            </Link>
-          </>
+          <CustomMenuLink href="/tobacco/add-purchase">
+            Add tobacco purchase
+          </CustomMenuLink>
         ) : null}
       </MenuList>
     </Menu>
   )
 }
+
+type CustomMenuLinkProps = {
+  href: LinkProps['href']
+  children: React.ReactNode
+}
+
+function CustomMenuLink({ href, children }: CustomMenuLinkProps) {
+  return (
+    <Link href={href} passHref>
+      <MenuLink as="a" css={menuLinkCss}>
+        {children}
+      </MenuLink>
+    </Link>
+  )
+}
+
+const menuLinkCss = [
+  tw`block px-4 py-1 text-xl outline-none cursor-pointer font-extralight font-display`,
+  css`
+    &[data-selected] {
+      ${tw`font-normal text-white bg-gray-400 outline-none select-none`}
+    }
+  `,
+]
 
 function MenuIcon() {
   return (
