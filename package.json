@@ -3,23 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build:styles": "tailwindcss-cli build src/styles/tailwind.css -o src/styles/index.css",
-    "watch:styles": "chokidar 'src/**/*.css' --ignore src/styles/index.css -c 'npm run build:styles'",
-    "predev": "npm run build:styles",
-    "next:dev": "next dev",
-    "dev": "npm-run-all --parallel watch:styles next:dev",
-    "prebuild": "NODE_ENV=production npm run build:styles",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx ."
   },
   "dependencies": {
+    "@emotion/babel-preset-css-prop": "^11.0.0",
     "@emotion/react": "^11.1.4",
     "@reach/menu-button": "^0.13.0",
     "@reach/visually-hidden": "^0.13.0",
     "@xstate/react": "^1.2.2",
     "autoprefixer": "^10.1.0",
-    "clsx": "^1.1.1",
     "date-fns": "^2.16.1",
     "firebase": "^8.2.1",
     "next": "^10.0.4",
@@ -28,6 +23,7 @@
     "react-dom": "17.0.1",
     "tailwindcss": "^2.0.2",
     "tailwindcss-cli": "^0.1.2",
+    "twin.macro": "^2.2.0",
     "xstate": "^4.15.2"
   },
   "devDependencies": {

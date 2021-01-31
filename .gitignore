@@ -32,5 +32,4 @@ yarn-error.log*
 
 # vercel
 .vercel
-src/styles/index.css
 out_publish/

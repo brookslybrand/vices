@@ -1,4 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
+import 'twin.macro'
 
 class MyDocument extends Document {
   render() {
@@ -14,7 +15,7 @@ class MyDocument extends Document {
             rel="stylesheet"
           />
         </Head>
-        <body className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 font-body">
+        <body tw="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 font-body">
           <Main />
           <NextScript />
         </body>

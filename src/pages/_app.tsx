@@ -1,9 +1,10 @@
 import React from 'react'
 import { AuthProvider } from 'hooks/useAuth'
 import type { AppProps } from 'next/app'
+import { GlobalStyles } from 'twin.macro'
 
-import '@reach/menu-button/styles.css'
-import '../styles/index.css'
+// import '@reach/menu-button/styles.css'
+// import '../styles/index.css'
 
 type ComponentWithPageLayout = {
   Component: AppProps['Component'] & {
@@ -31,10 +32,13 @@ export default function App({
     (({ children }: { children: React.ReactNode }) => <>{children}</>)
 
   return (
-    <AuthProvider>
-      <PageLayout>
-        <Component {...pageProps} />
-      </PageLayout>
-    </AuthProvider>
+    <>
+      <GlobalStyles />
+      <AuthProvider>
+        <PageLayout>
+          <Component {...pageProps} />
+        </PageLayout>
+      </AuthProvider>
+    </>
   )
 }

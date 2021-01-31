@@ -1,3 +1,4 @@
+import tw, { css } from 'twin.macro'
 import Link from 'next/link'
 import { auth } from 'firebaseApp'
 import { useAuth, User } from 'hooks/useAuth'
@@ -17,19 +18,19 @@ function Navigation() {
   const { state } = useAuth()
 
   return (
-    <div className="flex justify-between p-4">
+    <div tw="flex justify-between p-4">
       {/* for now all navigation is hidden if you're not logged in */}
-      {/* <nav className="space-x-2">
+      {/* <nav tw="space-x-2">
         <Link href="/">
-          <a className="hover:text-green-800">Home</a>
+          <a tw="hover:text-green-800">Home</a>
         </Link>
         <Link href="/tobacco/view-purchases">
-          <a className="hover:text-green-800">View tobacco purchase</a>
+          <a tw="hover:text-green-800">View tobacco purchase</a>
         </Link>
         {state === 'loggedIn' ? (
           <>
             <Link href="/tobacco/add-purchase">
-              <a className="hover:text-green-800">Add tobacco purchase</a>
+              <a tw="hover:text-green-800">Add tobacco purchase</a>
             </Link>
           </>
         ) : null}
@@ -50,14 +51,14 @@ function LogoutButton({ loginState }: { loginState: User['state'] }) {
 
   if (loginState === 'loggedIn') {
     return (
-      <button className="hover:text-green-800" onClick={() => auth.signOut()}>
+      <button tw="hover:text-green-800" onClick={() => auth.signOut()}>
         Logout
       </button>
     )
   }
   return (
     <Link href="/login">
-      <a className="hover:text-green-800">Login</a>
+      <a tw="hover:text-green-800">Login</a>
     </Link>
   )
 }
@@ -69,48 +70,61 @@ function NavMenu() {
     <Menu>
       <MenuButton>
         <VisuallyHidden>Menu</VisuallyHidden>
-        <svg
-          aria-hidden
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          className="text-gray-800 stroke-current"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-        </svg>
+        <MenuIcon />
       </MenuButton>
-      <MenuList className="bg-gray-100">
+      <MenuList
+      //tw="bg-gray-100"
+      >
         <Link href="/" passHref>
           <MenuLink
+            id="ass"
             as="a"
-            // className="hover:bg-gray-700 hover:text-white focus:bg-gray-700 focus:text-white"
+            tw="hover:bg-gray-500 hover:text-white focus:bg-gray-500 focus:text-white focus-within:bg-gray-500"
+            css={css`
+              &[data-selected] {
+                ${tw`bg-blue-400`}
+                /* background: green; */
+                color: white;
+                outline: none;
+              }
+            `}
           >
             Home
           </MenuLink>
         </Link>
         <Link href="/tobacco/view-purchases" passHref>
-          <MenuLink as="a" className="">
-            View tobacco purchase
-          </MenuLink>
+          <MenuLink as="a">View tobacco purchase</MenuLink>
         </Link>
 
         {state === 'loggedIn' ? (
           <>
             <Link href="/tobacco/add-purchase" passHref>
-              <MenuLink as="a" className="">
-                Add tobacco purchase
-              </MenuLink>
+              <MenuLink as="a">Add tobacco purchase</MenuLink>
             </Link>
           </>
         ) : null}
       </MenuList>
     </Menu>
+  )
+}
+
+function MenuIcon() {
+  return (
+    <svg
+      aria-hidden
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      tw="text-gray-800 stroke-current"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M4 6h16M4 12h16M4 18h16"
+      />
+    </svg>
   )
 }

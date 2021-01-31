@@ -1,3 +1,4 @@
+import 'twin.macro'
 import Head from 'next/head'
 import { firebase, auth } from 'firebaseApp'
 import PageLayout from 'components/page-layout'
@@ -18,9 +19,9 @@ function Login() {
       <Head>
         <title>Login</title>
       </Head>
-      <main className="w-40 h-screen mx-auto mt-8">
+      <main tw="w-40 h-screen mx-auto mt-8">
         <button
-          className="w-full px-4 py-2 text-2xl bg-green-800 rounded-md text-gray-50"
+          tw="w-full px-4 py-2 text-2xl bg-green-800 rounded-md text-gray-50"
           onClick={handleLogin}
         >
           Login

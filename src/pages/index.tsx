@@ -3,6 +3,7 @@ import { TOBACCO_PURCHASES } from 'constants/collections'
 import useCollection from 'hooks/useCollection'
 import { format, addDays } from 'date-fns'
 import PageLayout from 'components/page-layout'
+import 'twin.macro'
 
 function Home() {
   const { docs: tobaccoPurchases, state } = useCollection<TobaccoPurchase>(
@@ -10,7 +11,7 @@ function Home() {
   )
 
   return (
-    <h1 className="text-4xl">
+    <h1 tw="text-4xl">
       Next Purchase Date:{' '}
       <span>
         {state === 'loading'

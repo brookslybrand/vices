@@ -1,8 +1,8 @@
+import tw from 'twin.macro'
 import Image from 'next/image'
 import PageLayout from 'components/page-layout'
 import { Machine, assign, EventObject } from 'xstate'
 import { useMachine } from '@xstate/react'
-import clsx from 'clsx'
 import { db, storageRef, TobaccoPurchase } from 'firebaseApp'
 import { TOBACCO_PURCHASES } from 'constants/collections'
 import useAuthRedirect from 'hooks/useAuthRedirect'
@@ -19,20 +19,20 @@ function AddPurchase() {
 
   return (
     <form
-      className="my-8 space-y-4 w-80"
+      tw="my-8 space-y-4 w-80"
       onSubmit={(e) => {
         e.preventDefault()
         send('SUBMIT')
       }}
     >
-      <h1 className="text-4xl ">Add purchase</h1>
+      <h1 tw="text-4xl ">Add purchase</h1>
       <div>
-        <Label className="text-lg" htmlFor="date">
+        <Label tw="text-lg" htmlFor="date">
           Purchase date *
         </Label>
         <input
           id="date"
-          className="w-full"
+          tw="w-full"
           type="date"
           value={date ?? ''}
           onChange={(e) => handleUpdate({ date: e.target.value })}
@@ -41,11 +41,11 @@ function AddPurchase() {
       </div>
 
       <div>
-        <Label className="text-lg" htmlFor="name">
+        <Label tw="text-lg" htmlFor="name">
           Name *
         </Label>
         <input
-          className="block w-full"
+          tw="block w-full"
           id="name"
           type="text"
           value={name ?? ''}
@@ -55,11 +55,11 @@ function AddPurchase() {
       </div>
 
       <div>
-        <Label className="text-lg" htmlFor="amount">
+        <Label tw="text-lg" htmlFor="amount">
           Amount (oz) *
         </Label>
         <input
-          className="block w-full"
+          tw="block w-full"
           id="amount"
           type="number"
           value={amount ?? ''}
@@ -74,11 +74,11 @@ function AddPurchase() {
       </div>
 
       <div>
-        <Label className="text-lg" htmlFor="description">
+        <Label tw="text-lg" htmlFor="description">
           Description
         </Label>
         <textarea
-          className="block w-full"
+          tw="block w-full"
           id="description"
           value={description ?? ''}
           onChange={(e) => handleUpdate({ description: e.target.value })}
@@ -91,12 +91,12 @@ function AddPurchase() {
       />
 
       <button
-        className={clsx(
-          'w-full py-2 text-2xl font-medium rounded-md',
+        css={[
+          tw`w-full py-2 text-2xl font-medium rounded-md`,
           submitDisabled
-            ? 'text-gray-50 bg-gray-400'
-            : 'text-pink-100 bg-yellow-700'
-        )}
+            ? tw`bg-gray-400 text-gray-50`
+            : tw`text-pink-100 bg-yellow-700`,
+        ]}
         type="submit"
         disabled={submitDisabled}
       >
@@ -141,7 +141,7 @@ function AddImage({
         />
       ) : (
         <p>
-          <Label className="text-lg" htmlFor="image">
+          <Label tw="text-lg" htmlFor="image">
             Add image
           </Label>
           <input
@@ -187,7 +187,7 @@ function AddImage({
 }
 
 function Label({ htmlFor, ...props }: React.ComponentPropsWithoutRef<'label'>) {
-  return <label htmlFor={htmlFor} className="text-4xl" {...props} />
+  return <label htmlFor={htmlFor} tw="text-4xl" {...props} />
 }
 
 type Nullable<T> = { [P in keyof T]: T[P] | null }
