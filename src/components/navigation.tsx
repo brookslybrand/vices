@@ -12,22 +12,6 @@ function Navigation() {
 
   return (
     <div tw="flex justify-between p-4">
-      {/* for now all navigation is hidden if you're not logged in */}
-      {/* <nav tw="space-x-2">
-        <Link href="/">
-          <a tw="hover:text-green-800">Home</a>
-        </Link>
-        <Link href="/tobacco/view-purchases">
-          <a tw="hover:text-green-800">View tobacco purchase</a>
-        </Link>
-        {state === 'loggedIn' ? (
-          <>
-            <Link href="/tobacco/add-purchase">
-              <a tw="hover:text-green-800">Add tobacco purchase</a>
-            </Link>
-          </>
-        ) : null}
-      </nav> */}
       <NavMenu />
       <LogoutButton loginState={state} />
     </div>
