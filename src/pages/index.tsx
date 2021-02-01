@@ -7,7 +7,8 @@ import 'twin.macro'
 
 function Home() {
   const { docs: tobaccoPurchases, state } = useCollection<TobaccoPurchase>(
-    TOBACCO_PURCHASES
+    TOBACCO_PURCHASES,
+    { criteria: 'date', desc: false }
   )
 
   return (
@@ -32,12 +33,10 @@ export default Home
 
 const daysInMonth = 30
 function getNextPurchaseDate(purchases: TobaccoPurchase[]) {
-  return new Date(
-    purchases.reduce((nextPurchaseDate, { date, amount }) => {
-      // find the max between the previous next date and the last purchase date
-      nextPurchaseDate = Math.max(nextPurchaseDate, date.toDate().valueOf())
-      // add more days to get a future date
-      return addDays(nextPurchaseDate, amount * daysInMonth).valueOf()
-    }, -Infinity)
-  )
+  // get the first purchase date
+  const firstPurchaseDate = purchases[0].date.toDate()
+  // continuing adding the amount of each of the purchases to get next purchase date
+  return purchases.reduce((nextPurchaseDate, { amount }) => {
+    return addDays(nextPurchaseDate, amount * daysInMonth)
+  }, firstPurchaseDate)
 }
