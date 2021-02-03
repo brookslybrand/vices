@@ -1,7 +1,7 @@
 import tw, { css } from 'twin.macro'
 import Link from 'next/link'
 import type { LinkProps } from 'next/link'
-import { auth } from 'firebaseApp'
+import { auth } from 'fb/firebase-client'
 import { useAuth, User } from 'hooks/useAuth'
 import { useRouter } from 'next/router'
 import { Menu, MenuList, MenuButton, MenuLink } from '@reach/menu-button'

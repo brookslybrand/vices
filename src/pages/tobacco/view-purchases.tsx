@@ -1,6 +1,6 @@
 import Image, { ImageProps } from 'next/image'
 import PageLayout from 'components/page-layout'
-import { TobaccoPurchase } from 'firebaseApp'
+import { TobaccoPurchase } from 'fb/firebase-client'
 import useCollection from 'hooks/useCollection'
 import { TOBACCO_PURCHASES } from 'constants/collections'
 import 'twin.macro'

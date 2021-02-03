@@ -1,6 +1,6 @@
 import 'twin.macro'
 import Head from 'next/head'
-import { firebase, auth } from 'firebaseApp'
+import { firebase, auth } from 'fb/firebase-client'
 import PageLayout from 'components/page-layout'
 import useAuthRedirect from 'hooks/useAuthRedirect'
 

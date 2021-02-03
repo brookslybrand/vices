@@ -1,26 +1,18 @@
-import { TobaccoPurchase } from 'firebaseApp'
-import { TOBACCO_PURCHASES } from 'constants/collections'
-import useCollection from 'hooks/useCollection'
-import { format, addDays } from 'date-fns'
-import PageLayout from 'components/page-layout'
 import 'twin.macro'
+import { db } from 'fb/firebase-admin'
+import { TOBACCO_PURCHASES } from 'constants/collections'
+import { format, addDays } from 'date-fns'
 
-function Home() {
-  const { docs: tobaccoPurchases, state } = useCollection<TobaccoPurchase>(
-    TOBACCO_PURCHASES,
-    { criteria: 'date', desc: false }
-  )
+import type { TobaccoPurchase } from 'fb/firebase-client'
+import PageLayout from 'components/page-layout'
+import type { InferGetServerSidePropsType } from 'next'
 
+function Home({
+  nextPurchaseDate,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <h1 tw="text-4xl">
-      Next Purchase Date:{' '}
-      <span>
-        {state === 'loading'
-          ? 'Loading...'
-          : state === 'loaded'
-          ? format(getNextPurchaseDate(tobaccoPurchases), 'MM/dd/yy')
-          : 'Something went wrong'}
-      </span>
+      Next Purchase Date: <span>{nextPurchaseDate}</span>
     </h1>
   )
 }
@@ -30,6 +22,26 @@ Home.PageLayout = ({ children }: { children: React.ReactNode }) => {
 }
 
 export default Home
+
+export async function getServerSideProps() {
+  const tobaccoPurchasesDocs = await db
+    .collection(TOBACCO_PURCHASES)
+    .orderBy('date', 'asc')
+    .get()
+  const tobaccoPurchases = tobaccoPurchasesDocs.docs.map((doc) => {
+    const data = doc.data() as TobaccoPurchase
+    return { ...data, id: doc.id }
+  })
+
+  return {
+    props: {
+      nextPurchaseDate: format(
+        getNextPurchaseDate(tobaccoPurchases),
+        'MM/dd/yy'
+      ),
+    },
+  }
+}
 
 const daysInMonth = 30
 function getNextPurchaseDate(purchases: TobaccoPurchase[]) {

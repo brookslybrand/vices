@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { auth } from 'firebaseApp'
+import { auth } from 'fb/firebase-client'
 
 export { AuthProvider, useAuth }
 
