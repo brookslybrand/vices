@@ -1,4 +1,4 @@
-import { db } from 'firebaseApp'
+import { db } from 'fb/firebase-client'
 import { useState, useEffect, useRef } from 'react'
 import { LoadingState } from './useCollection'
 

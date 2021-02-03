@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { firebase, db } from 'firebaseApp'
+import { firebase, db } from 'fb/firebase-client'
 
 type OrderByType = {
   criteria: null | string | firebase.firestore.FieldPath

@@ -1,9 +1,12 @@
-import { TobaccoPurchase } from 'firebaseApp'
+import { TobaccoPurchase } from 'fb/firebase-client'
 import { TOBACCO_PURCHASES } from 'constants/collections'
 import useCollection from 'hooks/useCollection'
 import { format, addDays } from 'date-fns'
 import PageLayout from 'components/page-layout'
 import 'twin.macro'
+// import type { InferGetServerSideProps } from 'next'
+
+// export async function getServerSideProps() {}
 
 function Home() {
   const { docs: tobaccoPurchases, state } = useCollection<TobaccoPurchase>(
