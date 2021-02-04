@@ -1,4 +1,4 @@
-import 'twin.macro'
+import { css } from 'twin.macro'
 import { db } from 'fb/firebase-admin'
 import { TOBACCO_PURCHASES } from 'constants/collections'
 import { format, addDays } from 'date-fns'
@@ -6,14 +6,20 @@ import { format, addDays } from 'date-fns'
 import type { TobaccoPurchase } from 'fb/firebase-client'
 import PageLayout from 'components/page-layout'
 import type { InferGetServerSidePropsType } from 'next'
+import { Pipe, PipeAttribution } from 'components/pipe'
 
 function Home({
   nextPurchaseDate,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
-    <h1 tw="text-4xl">
-      Next Purchase Date: <span>{nextPurchaseDate}</span>
-    </h1>
+    <>
+      <Pipe tw="w-1/2 h-1/2 sm:(w-1/3 h-1/3) md:(w-1/4 h-1/4) lg:(w-1/5 h-1/5)" />
+      <h1 tw="text-4xl">
+        Next Purchase Date: <span>{nextPurchaseDate}</span>
+      </h1>
+
+      <PipeAttribution />
+    </>
   )
 }
 
