@@ -7,19 +7,24 @@ import 'twin.macro'
 function PageLayout({
   title,
   children,
+  footer,
 }: {
   title: string
   children: React.ReactNode
+  footer?: React.ReactNode
 }) {
   return (
     <>
-      <header>
-        <Head>
-          <title>{title}</title>
-        </Head>
-        <Navigation />
-      </header>
-      <main tw="flex flex-col items-center mt-8">{children}</main>
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <div tw="flex flex-col min-h-screen">
+        <header>
+          <Navigation />
+        </header>
+        <main tw="flex flex-col items-center mx-4 flex-grow">{children}</main>
+        <footer tw="w-full py-2 px-4 justify-self-end">{footer}</footer>
+      </div>
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { css } from 'twin.macro'
+import 'twin.macro'
 import { db } from 'fb/firebase-admin'
 import { TOBACCO_PURCHASES } from 'constants/collections'
 import { format, addDays } from 'date-fns'
@@ -14,17 +14,19 @@ function Home({
   return (
     <>
       <Pipe tw="w-1/2 h-1/2 sm:(w-1/3 h-1/3) md:(w-1/4 h-1/4) lg:(w-1/5 h-1/5)" />
-      <h1 tw="text-4xl">
+      <h1 tw="text-2xl md:text-4xl">
         Next Purchase Date: <span>{nextPurchaseDate}</span>
       </h1>
-
-      <PipeAttribution />
     </>
   )
 }
 
 Home.PageLayout = ({ children }: { children: React.ReactNode }) => {
-  return <PageLayout title="Vices" children={children} />
+  return (
+    <PageLayout title="Vices" footer={<PipeAttribution />}>
+      {children}
+    </PageLayout>
+  )
 }
 
 export default Home

@@ -15,7 +15,7 @@ class MyDocument extends Document {
             rel="stylesheet"
           />
         </Head>
-        <body tw="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 font-body">
+        <body tw="bg-gradient-to-b from-orange-50 to-orange-100 font-body">
           <Main />
           <NextScript />
         </body>
