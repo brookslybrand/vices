@@ -6,7 +6,7 @@ import { useMachine } from '@xstate/react'
 import { db, storageRef, TobaccoPurchase } from 'fb/firebase-client'
 import { TOBACCO_PURCHASES } from 'constants/collections'
 import useAuthRedirect from 'hooks/useAuthRedirect'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 function AddPurchase() {
   const [state, send] = useMachine(purchaseMachine)
@@ -19,20 +19,19 @@ function AddPurchase() {
 
   return (
     <form
-      tw="my-8 space-y-4 w-80"
+      tw="my-8 space-y-4 w-96 bg-green-100 p-6 rounded shadow-md text-gray-900"
       onSubmit={(e) => {
         e.preventDefault()
         send('SUBMIT')
       }}
     >
-      <h1 tw="text-4xl ">Add purchase</h1>
+      <h1 tw="text-4xl">Add purchase</h1>
       <div>
         <Label tw="text-lg" htmlFor="date">
           Purchase date *
         </Label>
-        <input
+        <CustomInput
           id="date"
-          tw="w-full"
           type="date"
           value={date ?? ''}
           onChange={(e) => handleUpdate({ date: e.target.value })}
@@ -44,8 +43,7 @@ function AddPurchase() {
         <Label tw="text-lg" htmlFor="name">
           Name *
         </Label>
-        <input
-          tw="block w-full"
+        <CustomInput
           id="name"
           type="text"
           value={name ?? ''}
@@ -58,8 +56,7 @@ function AddPurchase() {
         <Label tw="text-lg" htmlFor="amount">
           Amount (oz) *
         </Label>
-        <input
-          tw="block w-full"
+        <CustomInput
           id="amount"
           type="number"
           value={amount ?? ''}
@@ -78,7 +75,7 @@ function AddPurchase() {
           Description
         </Label>
         <textarea
-          tw="block w-full"
+          css={inputClassName}
           id="description"
           value={description ?? ''}
           onChange={(e) => handleUpdate({ description: e.target.value })}
@@ -118,6 +115,8 @@ const AddPurchasePageLayout = ({ children }: { children: React.ReactNode }) => {
 AddPurchase.PageLayout = AddPurchasePageLayout
 
 export default AddPurchase
+
+// components
 
 function AddImage({
   imageUrl,
@@ -189,6 +188,14 @@ function AddImage({
 function Label({ htmlFor, ...props }: React.ComponentPropsWithoutRef<'label'>) {
   return <label htmlFor={htmlFor} tw="text-4xl" {...props} />
 }
+
+const inputClassName = tw`w-full p-1 bg-white bg-opacity-80 rounded border border-gray-300 outline-none hover:(border-blue-300) focus:(border-blue-700)`
+
+function CustomInput(props: React.ComponentPropsWithoutRef<'input'>) {
+  return <input css={inputClassName} {...props} />
+}
+
+// hooks/logic
 
 type Nullable<T> = { [P in keyof T]: T[P] | null }
 type Context = Nullable<Omit<TobaccoPurchase, 'date'> & { date: string }>
