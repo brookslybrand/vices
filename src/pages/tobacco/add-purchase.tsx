@@ -19,7 +19,7 @@ function AddPurchase() {
 
   return (
     <form
-      tw="my-8 space-y-4 w-96 bg-green-100 p-6 rounded shadow-md text-gray-900"
+      tw="my-8 space-y-4 w-96 bg-green-100 px-6 py-12 rounded shadow-md text-gray-900"
       onSubmit={(e) => {
         e.preventDefault()
         send('SUBMIT')
@@ -83,6 +83,7 @@ function AddPurchase() {
       </div>
 
       <AddImage
+        tw="pb-4" // TODO: Remove once styled properly
         imageUrl={imageUrl}
         onChange={(url) => handleUpdate({ imageUrl: url })}
       />
@@ -91,8 +92,8 @@ function AddPurchase() {
         css={[
           tw`w-full py-2 text-2xl font-medium rounded-md`,
           submitDisabled
-            ? tw`bg-gray-400 text-gray-50`
-            : tw`text-pink-100 bg-yellow-700`,
+            ? tw`bg-black bg-opacity-30 text-gray-50`
+            : tw`text-gray-100 bg-orange-600 bg-opacity-90`,
         ]}
         type="submit"
         disabled={submitDisabled}
@@ -119,9 +120,11 @@ export default AddPurchase
 // components
 
 function AddImage({
+  className,
   imageUrl,
   onChange,
 }: {
+  className?: string
   imageUrl: null | string
   onChange: (imageUrl: string) => void
 }) {
@@ -130,7 +133,7 @@ function AddImage({
     height: number
   }>(null)
   return (
-    <div>
+    <div className={className}>
       {imageUrl !== null && imageData !== null ? (
         <Image
           src={imageUrl}
