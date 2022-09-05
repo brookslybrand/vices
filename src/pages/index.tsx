@@ -31,32 +31,22 @@ Home.PageLayout = ({ children }: { children: React.ReactNode }) => {
 
 export default Home
 
+const daysInMonth = 30
 export async function getServerSideProps() {
-  const tobaccoPurchasesDocs = await db
+  const lastPurchaseDocs = await db
     .collection(TOBACCO_PURCHASES)
-    .orderBy('date', 'asc')
+    .orderBy('date', 'desc')
+    .limit(1)
     .get()
-  const tobaccoPurchases = tobaccoPurchasesDocs.docs.map((doc) => {
+
+  const nextPurchaseDate = lastPurchaseDocs.docs.map((doc) => {
     const data = doc.data() as TobaccoPurchase
-    return { ...data, id: doc.id }
-  })
+    return addDays(data.date.toDate(), data.amount * daysInMonth)
+  })[0]
 
   return {
     props: {
-      nextPurchaseDate: format(
-        getNextPurchaseDate(tobaccoPurchases),
-        'MM/dd/yy'
-      ),
+      nextPurchaseDate: format(nextPurchaseDate, 'MM/dd/yy'),
     },
   }
-}
-
-const daysInMonth = 30
-function getNextPurchaseDate(purchases: TobaccoPurchase[]) {
-  // get the first purchase date
-  const firstPurchaseDate = purchases[0].date.toDate()
-  // continuing adding the amount of each of the purchases to get next purchase date
-  return purchases.reduce((nextPurchaseDate, { amount }) => {
-    return addDays(nextPurchaseDate, amount * daysInMonth)
-  }, firstPurchaseDate)
 }
